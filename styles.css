@@ -1,0 +1,142 @@
+        /*  @font-face {
+              font-family: 'Raleway';
+              src: url('RalewayRegular.ttf') format('truetype');
+              font-weight: normal;
+              font-style: normal;
+          } */
+
+        body {
+            font-family: Arial, sans-serif; /* Или font-family: 'Raleway', sans-serif; */
+            background-color: #3D1F11;
+            color: #FFFA99;
+            margin: 0;
+            height: 100vh; /* Занимает всю высоту экрана */
+            overflow: hidden; /* Запрещает прокрутку */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Шапка */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            font-size: 28px;
+        }
+
+        /* Основное окно */
+        .main-window {
+            flex: 1; /* Занимает все доступное пространство */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+		
+		.start-window {
+            flex: 1; /* Занимает все доступное пространство */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Кнопки */
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 50px;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            background-color: #FFFA99;
+            color: #3D1F11;
+            border: none;
+            padding: 30px 100px;
+            font-size: 40px;
+            cursor: pointer;
+            border-radius: 15px;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+
+        .button:hover {
+            background-color: #D4D07C;
+        }
+
+        /* Окна Вопрос/Ответ/Факты */
+        .fact-window, .profile-window, .question-window, .answer-window {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            padding: 20px; /* Чтобы текст не прилипал к краям */
+        }
+
+        .fact-window h2, .profile-window h2, .question-window h2, .answer-window h2 {
+            margin-bottom: 20px;
+			font-size: 36px;
+        }
+
+        .fact-window p, .profile-window p, .question-window p, .answer-window p {
+            font-size: 36px;
+            line-height: 1.1;
+            max-width: 70%; /* Ограничиваем ширину текста */
+			white-space: pre-line;
+        }
+		
+        /* Таблица котировок */
+        .stock-table {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+			font-size: 28px;
+        }
+
+        .stock-table table {
+            border-collapse: collapse;
+            width: auto;
+            margin: 0 10px; /* Отступ между таблицами */
+        }
+
+        .stock-table th, .stock-table td {
+            border: 1px solid #FFFA99;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .stock-table th {
+            background-color: #5C3317;
+        }
+		
+		 /* Стили для картинки */
+        .image-container {
+            max-width: 100%;
+            max-height: 90%;
+            //display: none; /* Скрываем контейнер по умолчанию */
+			display: flex; 
+			align-items: center; 
+			justify-content: center;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /*  Важно: сохраняет соотношение сторон и помещает картинку целиком в контейнер */
+        }
+
+        /* Подвал */
+        .footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 28px;
+        }
+
+        /* Скрытие окон */
+        .hidden {
+            display: none;
+        }

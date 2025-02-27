@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Финансовая Игра</title>
+	<link href="styles.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="header">
+    <div onclick="startMainWindow()">БАЙ</div>
+    <div onclick="startMainWindow()">Адымнар</div>
+</div>
+
+<div class="start-window" id="start-window">
+    <div class="button-grid" id="start-button-grid">
+        <button class="button" onclick="showMainWindow()">Начать</button>
+		<button class="button" onclick="showProfiles()">Профили</button>
+        <button class="button" onclick="showImg()">Бланки</button>
+        <button class="button" onclick="showLogo()">Логотип</button>
+        <button class="button" onclick="reloadPage()">Обновить</button>
+		<button class="button" onclick="toggleFullscreen()">Во весь экран</button>
+    </div>
+	
+	<div class="image-container hidden" id="start-image-container" onclick="startMainWindow()">
+		<img src="forma2.jpg" alt="Field">
+	</div>
+	
+	<div class="image-container hidden" id="start-logo-container" onclick="startMainWindow()">
+		<img src="logo.jpg" alt="Logo">
+	</div>
+	
+</div>
+
+<div class="main-window hidden" id="main-window">
+    <div class="button-grid">
+        <button class="button" onclick="showFacts('family')">Семья</button>
+        <button class="button" onclick="showFacts('leisure')">Отдых</button>
+        <button class="button" onclick="showQuestion()">Возможности</button>
+        <button class="button" onclick="showFacts('market')">Маркет</button>
+    </div>
+</div>
+
+<div class="fact-window hidden" id="fact-window" onclick="showMainWindow()">
+    <!--<h2 id="fact-title"></h2>-->
+    <p id="fact-content"></p>
+</div>
+
+<div class="profile-window hidden" id="profile-window" onclick="showProfiles()">
+    <!--<h2 id="profile-title"></h2>-->
+    <p id="profile-content"></p>
+</div>
+
+<div class="question-window hidden" id="question-window" onclick="showAnswer()">
+    <!--<h2>Возможности</h2>-->
+    <p id="question-content"></p>
+</div>
+
+<div class="answer-window hidden" id="answer-window" onclick="showMainWindow()">
+    <!--<h2>Возможности</h2>-->
+    <p id="answer-content"></p>
+</div>
+
+<div class="stock-table hidden"  id="stock-table" >
+    <table>
+        <thead>
+        <tr><th>Инструменты</th><th>Стоимость</th></tr>
+        </thead>
+        <tbody id="stock-table-left"></tbody>
+    </table>
+    <table>
+        <thead>
+        <tr><th>Валюта</th><th>Стоимость</th></tr>
+        </thead>
+        <tbody id="stock-table-center"></tbody>
+    </table>
+	
+	<table>
+        <thead>
+        <tr><th>Акция</th><th>Доход</th><th>Стоимость</th></tr>
+        </thead>
+        <tbody id="stock-table-right"></tbody>
+    </table>
+	
+
+</div>
+
+<div class="footer">
+    igraibai.ru
+</div>
+<script src="data.js"></script>
+</body>
+</html>
