@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Финансовая Игра</title>
+	<link href="https://bai-game.github.io/styles.css" rel="stylesheet">
+	<style> 
+	        /*  @font-face {
+              font-family: 'Raleway';
+              src: url('RalewayRegular.ttf') format('truetype');
+              font-weight: normal;
+              font-style: normal;
+          } */
+
+        body {
+            font-family: Arial, sans-serif; /* Или font-family: 'Raleway', sans-serif; */
+            background-color: #3D1F11;
+            color: #FFFA99;
+            margin: 0;
+            height: 100vh; /* Занимает всю высоту экрана */
+            overflow: hidden; /* Запрещает прокрутку */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Шапка */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            font-size: 28px;
+        }
+
+        /* Основное окно */
+        .main-window {
+            flex: 1; /* Занимает все доступное пространство */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+		
+		.start-window {
+            flex: 1; /* Занимает все доступное пространство */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Кнопки */
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 50px;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            background-color: #FFFA99;
+            color: #3D1F11;
+            border: none;
+            padding: 30px 100px;
+            font-size: 40px;
+            cursor: pointer;
+            border-radius: 15px;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+
+        .button:hover {
+            background-color: #D4D07C;
+        }
+
+        /* Окна Вопрос/Ответ/Факты */
+        .fact-window, .profile-window, .question-window, .answer-window {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            padding: 20px; /* Чтобы текст не прилипал к краям */
+        }
+
+        .fact-window h2, .profile-window h2, .question-window h2, .answer-window h2 {
+            margin-bottom: 20px;
+			font-size: 36px;
+        }
+
+        .fact-window p, .profile-window p, .question-window p, .answer-window p {
+            font-size: 36px;
+            line-height: 1.1;
+            max-width: 70%; /* Ограничиваем ширину текста */
+			white-space: pre-line;
+        }
+		
+        /* Таблица котировок */
+        .stock-table {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+			font-size: 28px;
+        }
+
+        .stock-table table {
+            border-collapse: collapse;
+            width: auto;
+            margin: 0 10px; /* Отступ между таблицами */
+        }
+
+        .stock-table th, .stock-table td {
+            border: 1px solid #FFFA99;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .stock-table th {
+            background-color: #5C3317;
+        }
+		
+		 /* Стили для картинки */
+        .image-container {
+            max-width: 100%;
+            max-height: 90%;
+            //display: none; /* Скрываем контейнер по умолчанию */
+			display: flex; 
+			align-items: center; 
+			justify-content: center;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /*  Важно: сохраняет соотношение сторон и помещает картинку целиком в контейнер */
+        }
+
+        /* Подвал */
+        .footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 28px;
+        }
+
+        /* Скрытие окон */
+        .hidden {
+            display: none;
+        }
+	</style>
+</head>
+<body>
+
+<div class="header">
+    <div onclick="startMainWindow()">БАЙ</div>
+    <div onclick="startMainWindow()">Адымнар</div>
+</div>
+
+<div class="start-window" id="start-window">
+    <div class="button-grid" id="start-button-grid">
+        <button class="button" onclick="showMainWindow()">Начать</button>
+		<button class="button" onclick="showProfiles()">Профили</button>
+        <button class="button" onclick="showImg()">Бланки</button>
+        <button class="button" onclick="showLogo()">Логотип</button>
+        <button class="button" onclick="reloadPage()">Обновить</button>
+		<button class="button" onclick="toggleFullscreen()">Во весь экран</button>
+    </div>
+	
+	<div class="image-container hidden" id="start-image-container" onclick="startMainWindow()">
+		<img src="forma2.jpg" alt="Field">
+	</div>
+	
+	<div class="image-container hidden" id="start-logo-container" onclick="startMainWindow()">
+		<img src="logo.jpg" alt="Logo">
+	</div>
+	
+</div>
+
+<div class="main-window hidden" id="main-window">
+    <div class="button-grid">
+        <button class="button" onclick="showFacts('family')">Семья</button>
+        <button class="button" onclick="showFacts('leisure')">Отдых</button>
+        <button class="button" onclick="showQuestion()">Возможности</button>
+        <button class="button" onclick="showFacts('market')">Маркет</button>
+    </div>
+</div>
+
+<div class="fact-window hidden" id="fact-window" onclick="showMainWindow()">
+    <!--<h2 id="fact-title"></h2>-->
+    <p id="fact-content"></p>
+</div>
+
+<div class="profile-window hidden" id="profile-window" onclick="showProfiles()">
+    <!--<h2 id="profile-title"></h2>-->
+    <p id="profile-content"></p>
+</div>
+
+<div class="question-window hidden" id="question-window" onclick="showAnswer()">
+    <!--<h2>Возможности</h2>-->
+    <p id="question-content"></p>
+</div>
+
+<div class="answer-window hidden" id="answer-window" onclick="showMainWindow()">
+    <!--<h2>Возможности</h2>-->
+    <p id="answer-content"></p>
+</div>
+
+<div class="stock-table hidden"  id="stock-table" >
+    <table>
+        <thead>
+        <tr><th>Инструменты</th><th>Стоимость</th></tr>
+        </thead>
+        <tbody id="stock-table-left"></tbody>
+    </table>
+    <table>
+        <thead>
+        <tr><th>Валюта</th><th>Стоимость</th></tr>
+        </thead>
+        <tbody id="stock-table-center"></tbody>
+    </table>
+	
+	<table>
+        <thead>
+        <tr><th>Акция</th><th>Доход</th><th>Стоимость</th></tr>
+        </thead>
+        <tbody id="stock-table-right"></tbody>
+    </table>
+	
+
+</div>
+
+<div class="footer">
+    igraibai.ru
+</div>
+<script>
+const familyData = [
+"Далекий родственник оставил вам наследство\n\nФинансы: 100\nШДС: +1",
+"Ваша тетя купила вам скетчбук для рисования\n\nФинансы: 200\nШДС: +1",
+"Соседи родителей отправили вам мешок картошки из деревни\n\nФинансы: 300\nШДС: +1",
+"Родители оплатили вам языковые курсы за границей\n\nФинансы: 100\nШДС: +1",
+"Брат подарил вам билеты на концерт любимой группы\n\nФинансы: 10\nШДС: +1",
+"Радостное событие! Ваша сестра выходит замуж. Срочно за подарком\n\nФинансы: -20\nШДС: +1",
+"У вашего брата родился первенец! Вы уже бежите за подарком\n\nФинансы: -20\nШДС: +1",
+"Родные подарили Вам пушистеньких котят. Нужен корм и лоток\n\nФинансы: -10\nШДС: +1",
+"Родные позвали вас на аш. Без кучтэнэчэ на порог не зайти\n\nФинансы: -10\nШДС: +1",
+"Вечер настольных игр в кругу семьи! Веселые игры, смех и общение – отличный способ провести время вместе и укрепить семейные узы\n\nФинансы: 10\nШДС: +1",
+"Вы нашли деньги в зимней куртке, которые вам в прошлом году подарила бабушка\n\nФинансы: 40\nШДС: +1",
+"Вместе помогаем другу семьи, попавшему в трудную ситуацию! Доброта и взаимовыручка – основа наших семейных ценностей\n\nФинансы: -10\nШДС: +1",
+"Покупка новой мебели в гостиную. Мама очень рада\n\nФинансы: -20\nШДС: +1",
+"Мама помогла вам устроиться репетитором для маленького сына ее соседки\n\nФинансы: 10\nШДС: +1",
+"Друзья семьи подарили вам отдых на базе\n\nФинансы: 100\nШДС: +1"
+];
+
+const leisureData = [
+"Мастер-класс по гончарному делу! Вы получили удовольствие от урока\n\nФинансы: -10\nШДС: +1",
+"Ваши навыки фотографирования природы выходят на новый уровень. Приобретите новый объектив для фотоаппарата\n\nФинансы: -50\nШДС: +1",
+"Вы решили навестить соседа и поделились с ним пиццей, которую приготовили на ужин\n\nФинансы: -10\nШДС: +1",
+"Вы поехали на озеро покататься на сапсерфах\n\nФинансы: -30\nШДС: +1",
+"Вам уже надоели прогулки по городу и вы решаетесь на экстримальный отдых. Полет в аэротрубе!\n\nФинансы: -200\nШДС: +1",
+"Поездка на море! Солнце, пляж, купание и морской бриз – идеальный отдых после напряженного года\n\nФинансы: -100\nШДС: +1",
+"Поход в горы! Чистый воздух, красивые пейзажи и физическая активность – отличный способ укрепить здоровье и получить заряд бодрости\n\nФинансы: -10\nШДС: +1",
+"Идем в кино! Просмотр нового фильма на большом экране – отличный способ развлечься\n\nФинансы: -10\nШДС: +1",
+"Посещение музея! Возможность расширить кругозор и прикоснуться к искусству\n\nФинансы: -10\nШДС: +1",
+"Вечер настольных игр в кругу семьи! Веселые игры, смех и общение – отличный способ провести время вместе и укрепить семейные узы\n\nФинансы: 10\nШДС: +1",
+"Едем на деревню к бабушке! Ягоды, парное молоко, сон, ромашковое поле - что еще нужно для счастья\n\nФинансы: 0\nШДС: +1",
+"Поездка на дачу! Работа в саду, выращивание овощей и фруктов – отличный способ отдохнуть от городской жизни\n\nФинансы: 0\nШДС: +1",
+"Прогулка по старому городу. Узкие улочки, архитектура, маленькие кафе - эстетический восторг\n\nФинансы: 0\nШДС: +1",
+"Просто целый день лежать дома, читать книгу и есть свежеиспеченые оладьи. И это просто лучший день!\n\nФинансы: 0\nШДС: +1"
+];
+
+const profilesData = [
+"ПРЕПОДАВАТЕЛЬ\n\n\nЗарплата: 50\n\nОсновные условия:\nНабрать 10 по ШДС\n Набрать 300 по ШФС\n\nДополнительные условия:\nВладеть земельным участком к концу игры",
+"ВОДИТЕЛЬ\n\n\nЗарплата: 50\n\nОсновные условия:\nНабрать 10 по ШДС\n Набрать 300 по ШФС\n\nДополнительные условия:\nВладеть автомобилем к концу игры",
+"ЭКОНОМИСТ\n\n\nЗарплата: 50\n\nОсновные условия:\nНабрать 10 по ШДС\n Набрать 300 по ШФС\n\nДополнительные условия:\nВладеть долей в бизнесе к концу игры",
+"ПРОГРАММИСТ\n\n\nЗарплата: 50\n\nОсновные условия:\nНабрать 10 по ШДС\n Набрать 300 по ШФС\n\nДополнительные условия:\nДважды пожертвовать деньги на благотворительность",
+"СТОМАТОЛОГ\n\n\nЗарплата: 50\n\nОсновные условия:\nНабрать 10 по ШДС\n Набрать 300 по ШФС\n\nДополнительные условия:\nВладеть квартирой к концу игры",
+"АДВОКАТ\n\n\nЗарплата: 50\n\nОсновные условия:\nНабрать 10 по ШДС\n Набрать 300 по ШФС\n\nДополнительные условия:\nДважды пожертвовать деньги на благотворительность",
+"ДИРЕКТОР МАГАЗИНА\n\n\nЗарплата: 50\n\nОсновные условия:\nНабрать 10 по ШДС\n Набрать 300 по ШФС\n\nДополнительные условия:\nДважды пожертвовать деньги на благотворительность"
+];
+
+const opportunityData = [
+{ question: "Цех по розливу домашнего пива ПИВОРИО\n\nСтоимость: 1300\nПассивный доход: 195", answer: "Покупка:  ШДС: -1 ШФС: 195\n\nОтказ:  ШДС: 1 ШФС: 0" },
+{ question: "Строительство жилого комплекса РАЙХАН\n\nСтоимость: 3500\nПассивный доход: 210", answer: "Покупка:  ШДС: 1 ШФС: 210\n\nОтказ:  ШДС: 0 ШФС: 0" },
+{ question: "Стоматологический кабинет МУДРОСТЬ ЗУБА\n\nСтоимость: 4000\nПассивный доход: 200", answer: "Покупка:  ШДС: 1 ШФС: 200\n\nОтказ:  ШДС: 0 ШФС: 0" },
+{ question: "Букмекерская контора ПОСТАВЬ ПОЛОЖИ\n\nСтоимость: 1000\nПассивный доход: 300", answer: "Покупка:  ШДС: -2 ШФС: 300\n\nОтказ:  ШДС: 1 ШФС: 0" },
+{ question: "Строительство модульных домов ДРИМ ТРИМ\n\nСтоимость: 3000\nПассивный доход: 300", answer: "Покупка:  ШДС: 1 ШФС: 300\n\nОтказ:  ШДС: 0 ШФС: 0" },
+{ question: "Фирменный кондитерский магазин БАЛ\n\nСтоимость: 2000\nПассивный доход: 100", answer: "Покупка:  ШДС: -1 ШФС: 100\n\nОтказ:  ШДС: 1 ШФС: 0" },
+{ question: "Магазин брендовой одежды ШИКАРНЫЙ КЫЗ\n\nСтоимость: 3000\nПассивный доход: 250", answer: "Покупка:  ШДС: 1 ШФС: 250\n\nОтказ:  ШДС: 0 ШФС: 0" },
+{ question: "Пункт выдачи микрозаймов ВЫРУЧАЙ\n\nСтоимость: 1500\nПассивный доход: 200", answer: "Покупка:  ШДС: -1 ШФС: 200\n\nОтказ:  ШДС: 1 ШФС: 0" },
+{ question: "Лотерейный супермаркет ДОЛОТО\n\nСтоимость: 4500\nПассивный доход: 180", answer: "Покупка:  ШДС: -1 ШФС: 180\n\nОтказ:  ШДС: 1 ШФС: 0" },
+{ question: "Кейтеринг ЯЛ\n\nСтоимость: 2000\nПассивный доход: 300", answer: "Покупка:  ШДС: -1 ШФС: 300\n\nОтказ:  ШДС: 1 ШФС: 0" },
+{ question: "Программа по быстрому заработку LIRIKO\n\nСтоимость: 100\nПассивный доход: 300", answer: "Покупка:  ШДС: -2 ШФС: 300\n\nОтказ:  ШДС: 1 ШФС: 0" },
+{ question: "Программа по быстрому заработку LIRIKO\n\nСтоимость: 50\nПассивный доход: 200", answer: "Покупка:  ШДС: -2 ШФС: 200\n\nОтказ:  ШДС: 1 ШФС: 0" },
+{ question: "Цех по розливу домашнего пива ПИВОРИО\n (Доля 10%)\n\nСтоимость: 130\nПассивный доход: 19,5", answer: "Покупка:  ШДС: -1 ШФС: 19,5\n\nОтказ:  ШДС: 1 ШФС: 0" },
+{ question: "Строительство жилого комплекса РАЙХАН\n (Доля 10%)\n\nСтоимость: 350\nПассивный доход: 21", answer: "Покупка:  ШДС: 1 ШФС: 21\n\nОтказ:  ШДС: 0 ШФС: 0" },
+{ question: "Стоматологический кабинет МУДРОСТЬ ЗУБА\n (Доля 10%)\n\nСтоимость: 400\nПассивный доход: 20", answer: "Покупка:  ШДС: 1 ШФС: 20\n\nОтказ:  ШДС: 0 ШФС: 0" },
+{ question: "Букмекерская контора ПОСТАВЬ ПОЛОЖИ\n (Доля 10%)\n\nСтоимость: 100\nПассивный доход: 30", answer: "Покупка:  ШДС: -2 ШФС: 30\n\nОтказ:  ШДС: 1 ШФС: 0" },
+{ question: "Строительство модульных домов ДРИМ ТРИМ\n (Доля 10%)\n\nСтоимость: 300\nПассивный доход: 30", answer: "Покупка:  ШДС: 1 ШФС: 30\n\nОтказ:  ШДС: 0 ШФС: 0" },
+{ question: "Фирменный кондитерский магазин БАЛ\n (Доля 10%)\n\nСтоимость: 200\nПассивный доход: 10", answer: "Покупка:  ШДС: -1 ШФС: 10\n\nОтказ:  ШДС: 1 ШФС: 0" },
+{ question: "Магазин брендовой одежды ШИКАРНЫЙ КЫЗ\n (Доля 10%)\n\nСтоимость: 300\nПассивный доход: 25", answer: "Покупка:  ШДС: 1 ШФС: 25\n\nОтказ:  ШДС: 0 ШФС: 0" },
+{ question: "Пункт выдачи микрозаймов ВЫРУЧАЙ\n (Доля 10%)\n\nСтоимость: 150\nПассивный доход: 20", answer: "Покупка:  ШДС: -1 ШФС: 20\n\nОтказ:  ШДС: 1 ШФС: 0" },
+{ question: "Лотерейный супермаркет ДОЛОТО\n (Доля 10%)\n\nСтоимость: 450\nПассивный доход: 18", answer: "Покупка:  ШДС: -1 ШФС: 18\n\nОтказ:  ШДС: 1 ШФС: 0" },
+{ question: "Кейтеринг ЯЛ\n (Доля 10%)\n\nСтоимость: 200\nПассивный доход: 30", answer: "Покупка:  ШДС: -1 ШФС: 30\n\nОтказ:  ШДС: 1 ШФС: 0" },
+
+{ question: "2-комнатная квартира\n\nСтоимость: 2500\nПассивный доход: 100", answer: "Покупка:  ШДС: 1 ШФС: 100\n\nОтказ:  ШДС: 0 ШФС: 0" },
+{ question: "1-комнатная квартира\n\nСтоимость: 1500\nПассивный доход: 60", answer: "Покупка:  ШДС: 1 ШФС: 60\n\nОтказ:  ШДС: 0 ШФС: 0" },
+{ question: "2-комнатная квартира в рассрочку\n\nСтоимость: 2500\nСтартовый взнос: 400\nПассивный доход: 40", answer: "Покупка:  ШДС: 1 ШФС: 40\n\nОтказ:  ШДС: 0 ШФС: 0" },
+{ question: "1-комнатная квартира в ипотеку\n\nСтоимость: 1500\nСтартовый взнос: 250\nПассивный доход: 25", answer: "Покупка:  ШДС: -1 ШФС: 25\n\nОтказ:  ШДС: 1 ШФС: 0" },
+{ question: "1-комнатная квартира в соц. ипотеку\n\nСтоимость: 1500\nСтартовый взнос: 250\nПассивный доход: 25", answer: "Покупка:  ШДС: 1 ШФС: 25\n\nОтказ:  ШДС: 0 ШФС: 0" },
+{ question: "2-комнатная квартира через жилищный кооператив\n\nСтоимость: 2500\nСтартовый взнос: 400\nПассивный доход: 40", answer: "Покупка:  ШДС: 1 ШФС: 40\n\nОтказ:  ШДС: 0 ШФС: 0" },
+
+{ question: "Volkswagen Polo (2020 г)\n\nСтоимость: 1100\nПассивный доход: 60", answer: "Покупка:  ШДС: 1 ШФС: 60\n\nОтказ:  ШДС: 0 ШФС: 0" },
+{ question: "Haval Jolion (2023 г)\n\nСтоимость: 1600\nПассивный доход: 80", answer: "Покупка:  ШДС: 1 ШФС: 80\n\nОтказ:  ШДС: 0 ШФС: 0" },
+{ question: "LADA Vesta (2021 г)\n\nСтоимость: 1000\nПассивный доход: 50", answer: "Покупка:  ШДС: 1 ШФС: 50\n\nОтказ:  ШДС: 0 ШФС: 0" },
+{ question: "TANK 300 (2024 г)\n\nСтоимость: 2300\nПассивный доход: 115", answer: "Покупка:  ШДС: 1 ШФС: 115\n\nОтказ:  ШДС: 0 ШФС: 0" },
+{ question: "Kia Rio (2020 г) в кредит\n\nСтоимость: 1100\nСтартовый взнос: 220\nПассивный доход: 22", answer: "Покупка:  ШДС: -1 ШФС: 22\n\nОтказ:  ШДС: 1 ШФС: 0" },
+{ question: "Haval Jolion (2023 г) в кредит\n\nСтоимость: 1600\nСтартовый взнос: 320\nПассивный доход: 32", answer: "Покупка:  ШДС: -1 ШФС: 32\n\nОтказ:  ШДС: 1 ШФС: 0" },
+{ question: "LADA Vesta (2021 г) в рассрочку\n\nСтоимость: 1000\nСтартовый взнос: 200\nПассивный доход: 20", answer: "Покупка:  ШДС: 1 ШФС: 20\n\nОтказ:  ШДС: 0 ШФС: 0" },
+{ question: "TANK 300 (2024 г) в рассрочку\n\nСтоимость: 2300\nСтартовый взнос: 460\nПассивный доход: 46", answer: "Покупка:  ШДС: 1 ШФС: 46\n\nОтказ:  ШДС: 0 ШФС: 0" },
+
+{ question: "20 соток земли\n\nСтоимость: 250\nПассивный доход: 0", answer: "Покупка:  ШДС: 1 ШФС: 0\n\nОтказ:  ШДС: 0 ШФС: 0" },
+{ question: "40 соток земли\n\nСтоимость: 800\nПассивный доход: 0", answer: "Покупка:  ШДС: 1 ШФС: 0\n\nОтказ:  ШДС: 0 ШФС: 0" },
+{ question: "20 соток земли в кредит\n\nСтоимость: 250\nСтартовый взнос: 15\nПассивный доход: 0", answer: "Покупка:  ШДС: -1 ШФС: 0\n\nОтказ:  ШДС: 1 ШФС: 0" },
+{ question: "40 соток земли в рассрочку\n\nСтоимость: 800\nСтартовый взнос: 40\nПассивный доход: 0", answer: "Покупка:  ШДС: -1 ШФС: 0\n\nОтказ:  ШДС: 1 ШФС: 0" }
+ ];
+
+const marketData = [
+"Удивительно, но факт. В Госдуме решили отменить часть налогов на малый и средний бизнес\n +30% к пассивному доходу от бизнеса",
+"Стабильность. В Госдуме приняли решение об увеличении налогов на крупный бизнес\n -10% от пассивного дохода с бизнеса",
+"Стоимость акций упала. Золото и валюта подорожали",
+"Стоимость акций увеличилась. Снизилась стоимость золота и валюты",
+"Дефицит чипов продолжает давить на авторынок: цены на автомобили выросли в среднем на 20%",
+"Организация по быстрому заработку объявила о своём закрытии. Все ваши деньги остались у неё. Вернуть их нет возможности. Владельцы скрылись в неизвестном направлении",
+"Организация по быстрому заработку объявила о своём закрытии. Все ваши деньги остались у неё. Вернуть их нет возможности. Владельцы скрылись в неизвестном направлении",
+"Организация по быстрому заработку объявила о своём закрытии. Все ваши деньги остались у неё. Вернуть их нет возможности. Владельцы скрылись в неизвестном направлении",
+"Падение спроса на вторичку: собственники вынуждены снижать цены на 10%, чтобы привлечь покупателей",
+"Рынок новостроек раскаляется: цены взлетели на 15% из-за расширения льготной ипотеки",
+"Инвестиции в IT-стартапы растут: оценка компаний в среднем увеличилась на 20%",
+"Стоимость готового бизнеса в сфере общепита снизилась на 15% из-за ужесточения санитарных требований и снижения посещаемости",
+"Акции технологических гигантов обвалились после публикации разочаровывающих отчетов о прибылях: инвесторы пересматривают стратегии",
+"Акции энергетических компаний взлетели на фоне роста цен на нефть и газ: энергетический сектор становится привлекательным для инвестиций",
+"Регулятор усилил контроль за рынком акций: ожидается снижение волатильности и повышение прозрачности торгов",
+"Золото достигло исторического максимума: инвесторы ищут безопасные активы на фоне геополитической напряженности и высокой инфляции",
+"Геополитическая напряженность оказывает давление на доллар: инвесторы ищут безопасные активы, такие как золото"
+];
+
+// Связь между фактами "Маркета" и котировками
+const marketEffects = {
+"Удивительно, но факт. В Госдуме решили отменить часть налогов на малый и средний бизнес\n +30% к пассивному доходу от бизнеса": { Квартиры: -10, Автомобили: 10, Земля:10, Бизнес:20, Золото:71, Доллар:10, Юань:78, Дирхам:37, OilBase: 1.1, AlcoTico: 1.2, RealEstate: 1.2, TabacoN: 1.1},
+"Стабильность. В Госдуме приняли решение об увеличении налогов на крупный бизнес\n -10% от пассивного дохода с бизнеса": { Квартиры: 10, Автомобили: -10, Земля:0, Бизнес:-10, Золото:79, Доллар:8, Юань:72, Дирхам:32, OilBase: 1.1, AlcoTico: 1.2, RealEstate: 0.9, TabacoN: 1.2},
+"Стоимость акций упала. Золото и валюта подорожали": { Квартиры: 10, Автомобили: 0, Земля:20, Бизнес:-15, Золото:90, Доллар:12, Юань:85, Дирхам:38, OilBase: 0.8, AlcoTico: 0.8, RealEstate: 0.8, TabacoN: 0.8},
+"Стоимость акций увеличилась. Снизилась стоимость золота и валюты": { Квартиры: 10, Автомобили: -10, Земля:10, Бизнес:20, Золото:70, Доллар:8, Юань:72, Дирхам:32, OilBase: 1.3, AlcoTico: 1.3, RealEstate: 1.3, TabacoN: 1.3},
+"Дефицит чипов продолжает давить на авторынок: цены на автомобили выросли в среднем на 20%": { Квартиры: 10, Автомобили: 20, Земля:0, Бизнес:15, Золото:78, Доллар:12, Юань:90, Дирхам:37, OilBase: 1.1, AlcoTico: 0.9, RealEstate: 1.1, TabacoN: 0.9},
+"Организация по быстрому заработку объявила о своём закрытии. Все ваши деньги остались у неё. Вернуть их нет возможности. Владельцы скрылись в неизвестном направлении": { Квартиры: 0, Автомобили: -10, Земля:30, Бизнес:0, Золото:72, Доллар:8, Юань:81, Дирхам:33, OilBase: 0.9, AlcoTico: 1.1, RealEstate: 0.9, TabacoN: 1.1},
+"Организация по быстрому заработку объявила о своём закрытии. Все ваши деньги остались у неё. Вернуть их нет возможности. Владельцы скрылись в неизвестном направлении": { Квартиры: -10, Автомобили: 20, Земля:10, Бизнес:10, Золото:81, Доллар:10, Юань:70, Дирхам:39, OilBase: 1.1, AlcoTico: 1.1, RealEstate: 0.9, TabacoN: 1.0},
+"Организация по быстрому заработку объявила о своём закрытии. Все ваши деньги остались у неё. Вернуть их нет возможности. Владельцы скрылись в неизвестном направлении": { Квартиры: 20, Автомобили: -10, Земля:20, Бизнес:0, Золото:71, Доллар:10, Юань:79, Дирхам:40, OilBase: 1.1, AlcoTico: 1.0, RealEstate: 1.1, TabacoN: 1.1},
+"Падение спроса на вторичку: собственники вынуждены снижать цены на 10%, чтобы привлечь покупателей": { Квартиры: -10, Автомобили: 20, Земля:10, Бизнес:15, Золото:72, Доллар:12, Юань:70, Дирхам:30, OilBase: 1.1, AlcoTico: 1.0, RealEstate: 0.9, TabacoN: 0.9},
+"Рынок новостроек раскаляется: цены взлетели на 15% из-за расширения льготной ипотеки": { Квартиры: 15, Автомобили: -10, Земля:20, Бизнес:15, Золото:82, Доллар:8, Юань:73, Дирхам:34, OilBase: 0.9, AlcoTico: 1.0, RealEstate: 1.1, TabacoN: 1.2},
+"Инвестиции в IT-стартапы растут: оценка компаний в среднем увеличилась на 20%": { Квартиры: 0, Автомобили: 10, Земля:30, Бизнес:20, Золото:88, Доллар:11, Юань:84, Дирхам:32, OilBase: 1.1, AlcoTico: 0.9, RealEstate: 1.1, TabacoN: 1.0},
+"Стоимость готового бизнеса в сфере общепита снизилась на 15% из-за ужесточения санитарных требований и снижения посещаемости": { Квартиры: 20, Автомобили: 20, Земля:20, Бизнес:-15, Золото:75, Доллар:8, Юань:89, Дирхам:32, OilBase: 1.1, AlcoTico: 1.2, RealEstate: 1.0, TabacoN: 1.1},
+"Акции технологических гигантов обвалились после публикации разочаровывающих отчетов о прибылях: инвесторы пересматривают стратегии": { Квартиры: 20, Автомобили: -10, Земля:20, Бизнес:0, Золото:80, Доллар:10, Юань:86, Дирхам:34, OilBase: 0.5, AlcoTico: 0.9, RealEstate: 0.5, TabacoN: 1.0},
+"Акции энергетических компаний взлетели на фоне роста цен на нефть и газ: энергетический сектор становится привлекательным для инвестиций": { Квартиры: -10, Автомобили: 20, Земля:10, Бизнес:15, Золото:81, Доллар:8, Юань:72, Дирхам:33, OilBase: 2.0, AlcoTico: 1.1, RealEstate: 2.0, TabacoN: 1.2},
+"Регулятор усилил контроль за рынком акций: ожидается снижение волатильности и повышение прозрачности торгов": { Квартиры: 15, Автомобили: -10, Земля:20, Бизнес:15, Золото:71, Доллар:11, Юань:79, Дирхам:36, OilBase: 0.9, AlcoTico: 0.9, RealEstate: 0.9, TabacoN: 0.9},
+"Золото достигло исторического максимума: инвесторы ищут безопасные активы на фоне геополитической напряженности и высокой инфляции": { Квартиры: 0, Автомобили: -10, Земля:30, Бизнес:20, Золото:100, Доллар:11, Юань:80, Дирхам:36, OilBase: 1.1, AlcoTico: 1.2, RealEstate: 0.9, TabacoN: 0.9},
+"Геополитическая напряженность оказывает давление на доллар: инвесторы ищут безопасные активы, такие как золото": { Квартиры: 0, Автомобили: 20, Земля:30, Бизнес:20, Золото:80, Доллар:10, Юань:71, Дирхам:37, OilBase: 0.9, AlcoTico: 1.1, RealEstate: 0.9, TabacoN: 1.1}
+};
+
+    let currentQuestionIndex = 0;
+
+    let stockQuotes = [
+        { symbol: "Квартиры", price: 0 },
+        { symbol: "Автомобили", price: 0 },
+        { symbol: "Земля", price: 0 },
+        { symbol: "Бизнес", price: 0 },
+        { symbol: "Золото", price: 80 },
+        { symbol: "Доллар", price: 10 },
+        { symbol: "Юань", price: 80 },
+        { symbol: "Дирхам", price: 36 },
+        { symbol: "OilBase", price: 15 },
+        { symbol: "AlcoTico", price: 10 },
+        { symbol: "RealEstate", price: 30 },
+        { symbol: "TabacoN", price: 5 }
+    ];
+
+	const startWindow = document.getElementById("start-window");
+	const startButtonWindow = document.getElementById("start-button-grid");
+	const startImageWindow = document.getElementById("start-image-container");
+	const startLogoWindow = document.getElementById("start-logo-container");
+    const mainWindow = document.getElementById("main-window");
+	const stockWindow = document.getElementById("stock-table");
+    const factWindow = document.getElementById("fact-window");
+	const profileWindow = document.getElementById("profile-window");
+    const questionWindow = document.getElementById("question-window");
+    const answerWindow = document.getElementById("answer-window");
+	
+
+    const factTitle = document.getElementById("fact-title");
+    const factContent = document.getElementById("fact-content");
+	const profileTitle = document.getElementById("profile-title");
+    const profileContent = document.getElementById("profile-content");
+    const questionContent = document.getElementById("question-content");
+    const answerContent = document.getElementById("answer-content");
+
+    const stockTableLeft = document.getElementById("stock-table-left");
+	const stockTableCenter = document.getElementById("stock-table-center");
+	const stockTableRight = document.getElementById("stock-table-right");
+
+
+	function showImg() {
+		startButtonWindow.classList.add("hidden");
+		startImageWindow.classList.remove("hidden");
+		startLogoWindow.classList.add("hidden");
+		//const imageContainer = document.getElementById("start-image-container");
+		//imageContainer.style.display = "flex"; // Показываем контейнер
+		//imageContainer.style.alignItems = 'center'; //Центрируем по вертикали
+		//imageContainer.style.justifyContent = 'center'; // Центрируем по горизонтали
+	}
+	
+	function showLogo() {
+		startButtonWindow.classList.add("hidden");
+		startImageWindow.classList.add("hidden");
+		startLogoWindow.classList.remove("hidden");
+	}
+
+	function startMainWindow() {
+        mainWindow.classList.add("hidden");
+		stockWindow.classList.add("hidden");
+		startWindow.classList.remove("hidden");
+		startButtonWindow.classList.remove("hidden");
+		startImageWindow.classList.add("hidden");
+		startLogoWindow.classList.add("hidden");
+        factWindow.classList.add("hidden");
+		profileWindow.classList.add("hidden");
+        questionWindow.classList.add("hidden");
+        answerWindow.classList.add("hidden");
+    }
+	
+	function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                alert(`Ошибка при переходе в полноэкранный режим: ${err.message}`);
+            });
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    }
+	
+	function reloadPage() {
+         location.reload(); // Обновление страницы
+     }
+
+    function showMainWindow() {
+        mainWindow.classList.remove("hidden");
+		stockWindow.classList.remove("hidden");
+		startWindow.classList.add("hidden");
+        factWindow.classList.add("hidden");
+        questionWindow.classList.add("hidden");
+        answerWindow.classList.add("hidden");
+    }
+
+	function showProfiles() {
+        mainWindow.classList.add("hidden");
+		stockWindow.classList.add("hidden");
+		startWindow.classList.add("hidden");
+		startButtonWindow.classList.add("hidden");
+		startImageWindow.classList.add("hidden");
+        profileWindow.classList.remove("hidden");
+        questionWindow.classList.add("hidden");
+        answerWindow.classList.add("hidden");
+		let data = profilesData;
+        let title = "Профили";
+        const randomIndex = Math.floor(Math.random() * data.length);
+        profileContent.textContent = data[randomIndex];
+        profileTitle.textContent = title; // Устанавливаем заголовок окна
+    }
+
+    function showFacts(dataType) {
+        mainWindow.classList.add("hidden");
+        factWindow.classList.remove("hidden");
+        questionWindow.classList.add("hidden");
+        answerWindow.classList.add("hidden");
+
+        let data;
+        let title; // Добавляем переменную для заголовка
+
+        switch (dataType) {
+            case "family":
+                data = familyData;
+                title = "Семья"; // Устанавливаем заголовок
+                break;
+            case "leisure":
+                data = leisureData;
+                title = "Отдых"; // Устанавливаем заголовок
+                break;
+            case "market":
+                data = marketData;
+                title = "Маркет"; // Устанавливаем заголовок
+                const randomIndex = Math.floor(Math.random() * data.length);
+                const marketFact = data[randomIndex];
+                factContent.textContent = marketFact;
+                updateStockTable(marketFact);
+                break;
+            default:
+                data = [];
+                title = ""; // Устанавливаем пустой заголовок
+        }
+
+        if (dataType !== 'market') { // Выбираем случайный факт, только если это не "Маркет"
+            const randomIndex = Math.floor(Math.random() * data.length);
+            factContent.textContent = data[randomIndex];
+        }
+
+        factTitle.textContent = title; // Устанавливаем заголовок окна
+    }
+
+
+    function showQuestion() {
+        mainWindow.classList.add("hidden");
+        factWindow.classList.add("hidden");
+        questionWindow.classList.remove("hidden");
+        answerWindow.classList.add("hidden");
+
+        currentQuestionIndex = Math.floor(Math.random() * opportunityData.length);
+        questionContent.textContent = opportunityData[currentQuestionIndex].question;
+    }
+
+    function showAnswer() {
+        mainWindow.classList.add("hidden");
+        factWindow.classList.add("hidden");
+        questionWindow.classList.add("hidden");
+        answerWindow.classList.remove("hidden");
+
+        answerContent.textContent = opportunityData[currentQuestionIndex].answer;
+    }
+
+    function updateStockTable(marketFact) {
+        // Применяем изменения на основе выбранного факта "Маркета"
+        if (marketEffects[marketFact]) {
+            for (let i = 0; i < stockQuotes.length; i++) {
+                const symbol = stockQuotes[i].symbol;
+                if (marketEffects[marketFact][symbol]) {
+                    if (i < 8) {
+						stockQuotes[i].price = marketEffects[marketFact][symbol];
+					} else {
+						stockQuotes[i].price *= marketEffects[marketFact][symbol];
+						stockQuotes[i].price = parseFloat(stockQuotes[i].price.toFixed(0/*2*/)); // Ограничение до 2 знаков после запятой
+					}
+                }
+            }
+        }
+        stockTableLeft.innerHTML = "";
+		stockTableCenter.innerHTML = "";
+        stockTableRight.innerHTML = "";
+
+        // Populate the left table
+        for (let i = 0; i < 4; i++) {
+            const stock = stockQuotes[i];
+            const row = document.createElement("tr");
+            row.innerHTML = `<td>${stock.symbol}</td><td>${stock.price}%</td>`;
+            stockTableLeft.appendChild(row);}
+			
+		for (let i = 4; i < 8; i++) {
+            const stock = stockQuotes[i];
+            const row = document.createElement("tr");
+            row.innerHTML = `<td>${stock.symbol}</td><td>${stock.price}</td>`;
+            stockTableCenter.appendChild(row);}
+
+        // Populate the right table
+        for (let i = 8; i < stockQuotes.length; i++) {
+            const stock = stockQuotes[i];
+            const row = document.createElement("tr");
+            row.innerHTML = `<td>${stock.symbol}</td><td>10%</td><td>${stock.price}</td>`;
+            stockTableRight.appendChild(row);
+        }
+    }
+
+    // Initial update of the stock table (optional: update it on page load)
+    updateStockTable(marketData[Math.floor(Math.random() * marketData.length)]);  // Initial update with a random market fact
+
+</script>
+</body>
+</html>
